@@ -4,26 +4,35 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+public class HomePage {
+    private final WebDriverWait wait;
+    public WebDriver driver;
 
-public class test1 {
-    public static void main(String[] args) {
-        System.setProperty("webdriver.chrome.driver", "C:/Users/KsuNepomniashchaia/chromedriver.exe");
+    public HomePage(WebDriver driver) {
+        this.driver = driver;
+        this.wait = new WebDriverWait(driver, 10);
+    }
 
-        WebDriver driver = new ChromeDriver();
-
+    public HomePage get() {
         driver.get("https://tartecosmetics.com/");
+        handleCookies(wait);
+        return new HomePage(driver);
+    }
 
-        WebDriverWait wait = new WebDriverWait(driver, 10);
+    public void clickSignInButton() {
+        WebElement signInButton = driver.findElement(By.className("signin-section"));
+        signInButton.click();
+    }
 
+    private void handleCookies(WebDriverWait wait) {
         WebElement cookiesButton = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("onetrust-accept-btn-handler")));
         cookiesButton.click();
 
         sleep();
-        
+
         WebElement noThanksButton = null;
         try {
             noThanksButton = driver.findElements(By.className("bx-button")).get(3);
@@ -31,17 +40,9 @@ public class test1 {
             // Do nothing
         }
         var j = (JavascriptExecutor) driver;
-        
+
         j.executeScript("$(arguments[0]).click()", noThanksButton);
-        WebElement signInButton = driver.findElement(By.className("signin-section"));
-        signInButton.click();
-        String actualUrl = driver.getCurrentUrl();
-        String signInPageUrl = "https://tartecosmetics.com/shop/login?original=%2Fshop%2Fauthiframe%3Fformat%3Dajax";
-        System.out.println(actualUrl.equals(signInPageUrl));
-
     }
-
-
 
     private static void sleep() {
         try {
