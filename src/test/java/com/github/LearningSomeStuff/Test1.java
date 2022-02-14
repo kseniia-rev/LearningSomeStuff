@@ -7,6 +7,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class Test1 {
@@ -15,6 +17,7 @@ public class Test1 {
 
     @BeforeEach
     public void setup() {
+
         driver = new ChromeDriver();
     }
 
@@ -25,10 +28,10 @@ public class Test1 {
 
     }
     @Test
-    public void customerCanLogin() {
+    public void customerCanLogin() throws FileNotFoundException {
         HomePage homePage = new HomePage(driver);
         homePage.get().clickSignInButton();
-        
+
         String actualUrl = driver.getCurrentUrl();
         String signInPageUrl = "https://tartecosmetics.com/shop/login?original=%2Fshop%2Fauthiframe%3Fformat%3Dajax";
         System.out.println(actualUrl.equals(signInPageUrl));
@@ -37,19 +40,19 @@ public class Test1 {
         WebElement passwordField = driver.findElement(By.id("dwfrm_login_password"));
         WebElement loginButton = driver.findElement(By.className("btn-checkout"));
 
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter your Tarte email address:");
-        String emailAddress = scanner.next();
-        System.out.println("Enter your password:");
-        String password = scanner.next();
+        String filePath = "C:\\Users\\KsuNepomniashchaia\\LearningSomeStuff\\src\\test\\java\\com\\github\\LearningSomeStuff\\creds.txt";
+        File creds = new File(filePath);
+        Scanner scanner = new Scanner(creds);
+        String emailAddress = scanner.nextLine();
+        String password = scanner.nextLine();
         emailAddressField.sendKeys(emailAddress);
         passwordField.sendKeys(password);
         loginButton.click();
+
 
         String expectedUrl = "https://tartecosmetics.com/shop/myaccount";
         System.out.println(expectedUrl.equals(driver.getCurrentUrl()));
 
         driver.quit();
-
     }
 }
